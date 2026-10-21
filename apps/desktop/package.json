@@ -22,8 +22,9 @@
     "dist:linux": "electron-vite build && electron-builder --linux --publish never",
     "dist:win": "electron-vite build && electron-builder --win --publish never"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
     "@playwright/test": "^1.56.0",
     "@skillscope/core": "0.1.0",
     "@skillscope/shared": "0.1.0",
