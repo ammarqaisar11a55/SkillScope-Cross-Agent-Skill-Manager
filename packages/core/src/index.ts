@@ -13,3 +13,6 @@ export * from './inventory/files.js';
 export * from './inventory/build.js';
 export * from './inventory/query.js';
 export * from './inventory/scan.js';
+export * from './persistence/store.js';
+export * from './logging/operation-log.js';
+export * from './service/service.js';
