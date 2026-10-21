@@ -8,7 +8,6 @@ import {
   rename,
   rm,
   rmdir,
-  stat,
   writeFile,
 } from 'node:fs/promises';
 import type {
@@ -370,11 +369,4 @@ function receiptFor(
     backupPath,
     status: 'installed',
   };
-}
-
-export async function directoryExists(path: string): Promise<boolean> {
-  return stat(path).then(
-    (s) => s.isDirectory(),
-    () => false,
-  );
 }
