@@ -121,7 +121,10 @@ export async function buildInventory(input: BuildInventoryInput): Promise<Invent
       adapters: availability.map((a) => input.registry.get(a.agentId)),
     });
 
-    const managedInfo = input.managed?.(realKey) ?? null;
+    // Receipts store the destination as installed; it can differ from the canonical path when a
+    // parent folder is a symlink or a Windows 8.3 short name, so try both keys.
+    const managedInfo =
+      input.managed?.(realKey) ?? input.managed?.(pathKey(ctx, skill.dir)) ?? null;
     const management = !managedInfo
       ? 'external'
       : managedInfo.contentHash === tree.contentHash
