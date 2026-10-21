@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: Package (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies (lifecycle scripts disabled)
+        run: npm ci --ignore-scripts
+
+      - name: Download Electron binary
+        run: node node_modules/electron/install.js
+
+      - name: Test
+        run: npm test
+
+      - name: Build installers
+        run: npm run package
+        env:
+          # Code signing is not configured; installers are unsigned (see docs/release.md).
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Verify packaged app (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run --auto-servernum node scripts/verify-release.mjs apps/desktop/release --smoke
+
+      - name: Verify packaged app (Windows)
+        if: runner.os == 'Windows'
+        run: node scripts/verify-release.mjs apps/desktop/release --smoke
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: skillscope-${{ runner.os }}
+          path: |
+            apps/desktop/release/*/*.AppImage
+            apps/desktop/release/*/*.deb
+            apps/desktop/release/*/*.exe
+            apps/desktop/release/*/SHA256SUMS.txt
+          if-no-files-found: error
+
+  publish:
+    name: Draft GitHub release
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Combine checksums
+        run: |
+          find dist -name SHA256SUMS.txt -exec cat {} + | sort -k2 > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --draft --title "SkillScope $GITHUB_REF_NAME" \
+            --notes-file docs/release-notes.md \
+            $(find dist -type f \( -name '*.AppImage' -o -name '*.deb' -o -name '*.exe' \)) SHA256SUMS.txt
