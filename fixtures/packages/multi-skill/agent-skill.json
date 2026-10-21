@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "skills": [
+    {
+      "name": "code-review",
+      "path": "skills/code-review",
+      "agents": ["claude", "codex", "cursor"]
+    },
+    { "name": "test-writer", "path": "skills/test-writer", "agents": ["claude", "cursor"] }
+  ]
+}
