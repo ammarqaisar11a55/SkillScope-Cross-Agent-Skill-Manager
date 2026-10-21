@@ -57,6 +57,20 @@ jobs:
         if: runner.os == 'Windows'
         run: npm run test:e2e
 
+      - name: Package and verify (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          npm run package
+          xvfb-run --auto-servernum node scripts/verify-release.mjs apps/desktop/release --smoke
+
+      - name: Package and verify (Windows)
+        if: runner.os == 'Windows'
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npm run package
+          node scripts/verify-release.mjs apps/desktop/release --smoke
+
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4
