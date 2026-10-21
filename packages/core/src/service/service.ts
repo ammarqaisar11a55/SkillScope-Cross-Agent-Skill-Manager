@@ -112,10 +112,18 @@ export class SkillScopeService {
 
   // ---- inventory ------------------------------------------------------------------------
 
-  protected managedLookup(): ManagedLookup {
-    const byKey = new Map(
-      this.store.listReceipts().map((r) => [pathKey(this.platform, r.destination), r] as const),
-    );
+  /**
+   * Map installed receipts by both their recorded destination and its canonical (real) path, so a
+   * managed skill is recognised even when the scan reaches it through a symlink or a Windows
+   * 8.3 short name.
+   */
+  protected async managedLookup(): Promise<ManagedLookup> {
+    const byKey = new Map<string, ReturnType<SkillScopeStore['listReceipts']>[number]>();
+    for (const r of this.store.listReceipts()) {
+      byKey.set(pathKey(this.platform, r.destination), r);
+      const real = await realpath(r.destination).catch(() => null);
+      if (real) byKey.set(pathKey(this.platform, real), r);
+    }
     return (key) => {
       const r = byKey.get(key);
       return r
@@ -138,7 +146,7 @@ export class SkillScopeService {
       try {
         const snapshot = await scanInventory(this.registry, this.adapterContext(settings), {
           followSymlinks: settings.scan.followSymlinks,
-          managed: this.managedLookup(),
+          managed: await this.managedLookup(),
         });
         this.snapshot = snapshot;
         await this.store.saveSnapshot(snapshot);
