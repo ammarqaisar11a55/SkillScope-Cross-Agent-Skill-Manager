@@ -1,0 +1,364 @@
+{
+  "schema": "skillscope.inventory/v1",
+  "generatedAt": "2026-10-21T12:00:00.000Z",
+  "exportedAt": "2026-10-21T12:00:00.000Z",
+  "platform": "linux",
+  "workspaceRoot": "/home/you/projects/web-app",
+  "note": "Skills were detected on disk. Detection does not prove that an agent has loaded or executed a skill.",
+  "stats": {
+    "uniqueSkills": 10,
+    "availabilityRecords": 17,
+    "perAgent": {
+      "claude": 5,
+      "codex": 2,
+      "cursor": 10
+    },
+    "detectedAgents": 3,
+    "sharedSkills": 7,
+    "duplicateGroups": 1,
+    "problematicSkills": 1
+  },
+  "skills": [
+    {
+      "id": "sk_823455d86d613793d64f",
+      "name": "broken-no-skillmd",
+      "description": null,
+      "path": "/home/you/.claude/skills/broken-no-skillmd",
+      "realPath": "/home/you/.claude/skills/broken-no-skillmd",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "claude",
+          "relation": "native",
+          "root": "/home/you/.claude/skills",
+          "reason": "Claude Code reads Personal skills (~/.claude/skills) (/home/you/.claude/skills)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "compatible",
+          "root": "/home/you/.claude/skills",
+          "reason": "Cursor also reads Claude Code skills (~/.claude/skills) as a compatibility location (/home/you/.claude/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "invalid",
+      "errors": 1,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "missing-required-file",
+        "shared-location",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "b0e90622a7a6584a31ba9b324009529e303568285c38e7aff74cf451136bcfb6",
+      "modifiedAt": "2026-10-21T08:37:59.178Z"
+    },
+    {
+      "id": "sk_37f1055a938ab65b44b3",
+      "name": "code-review",
+      "description": "Review a diff for correctness, security and readability. Use before merging changes.",
+      "path": "/home/you/.agents/skills/code-review",
+      "realPath": "/home/you/.agents/skills/code-review",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "codex",
+          "relation": "native",
+          "root": "/home/you/.agents/skills",
+          "reason": "OpenAI Codex reads User skills ($HOME/.agents/skills) (/home/you/.agents/skills)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "native",
+          "root": "/home/you/.agents/skills",
+          "reason": "Cursor reads Shared user skills (~/.agents/skills) (/home/you/.agents/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "shared-location",
+        "duplicate-content",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "1d9c10ad35640c35ea7f1a8d793cab151fa93026cfa00a9a9f1718ef05bbe777",
+      "modifiedAt": "2026-10-21T08:37:59.175Z"
+    },
+    {
+      "id": "sk_9c8152a52238e2da5fa6",
+      "name": "code-review",
+      "description": "Review a diff for correctness, security and readability. Use before merging changes.",
+      "path": "/home/you/.claude/skills/code-review",
+      "realPath": "/home/you/.claude/skills/code-review",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "claude",
+          "relation": "native",
+          "root": "/home/you/.claude/skills",
+          "reason": "Claude Code reads Personal skills (~/.claude/skills) (/home/you/.claude/skills)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "compatible",
+          "root": "/home/you/.claude/skills",
+          "reason": "Cursor also reads Claude Code skills (~/.claude/skills) as a compatibility location (/home/you/.claude/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "shared-location",
+        "duplicate-content",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "1d9c10ad35640c35ea7f1a8d793cab151fa93026cfa00a9a9f1718ef05bbe777",
+      "modifiedAt": "2026-10-21T08:37:59.179Z"
+    },
+    {
+      "id": "sk_b221f9f158928f9cf969",
+      "name": "deploy-helper",
+      "description": "Walk through this project's deployment checklist. Use when preparing a release.",
+      "path": "/home/you/projects/web-app/.claude/skills/deploy-helper",
+      "realPath": "/home/you/projects/web-app/.claude/skills/deploy-helper",
+      "scope": "project",
+      "agents": [
+        {
+          "agent": "claude",
+          "relation": "native",
+          "root": "/home/you/projects/web-app/.claude/skills",
+          "reason": "Claude Code reads Project skills (.claude/skills) (/home/you/projects/web-app/.claude/skills)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "compatible",
+          "root": "/home/you/projects/web-app/.claude/skills",
+          "reason": "Cursor also reads Claude Code project skills (.claude/skills) as a compatibility location (/home/you/projects/web-app/.claude/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "shared-location",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "5e731c01a6acc43a0e880705dc83e401c93fe62faec6a925f7461a86d830f6ee",
+      "modifiedAt": "2026-10-21T08:37:59.190Z"
+    },
+    {
+      "id": "sk_e86b95c0f63d56ac1d20",
+      "name": "legacy-helper",
+      "description": "Helper kept in the legacy Codex location. Use for maintenance tasks.",
+      "path": "/home/you/.codex/skills/legacy-helper",
+      "realPath": "/home/you/.codex/skills/legacy-helper",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "cursor",
+          "relation": "compatible",
+          "root": "/home/you/.codex/skills",
+          "reason": "Cursor also reads Codex legacy skills (~/.codex/skills) as a compatibility location (/home/you/.codex/skills)."
+        }
+      ],
+      "sharedLocation": false,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "07b819b142d70f99c771f3703f5a98c55efafdb167ad988ea2b01eba1a57daf2",
+      "modifiedAt": "2026-10-21T08:37:59.185Z"
+    },
+    {
+      "id": "sk_c3b470e65b21409f2586",
+      "name": "pdf-tools",
+      "description": "Extract text and tables from PDF files and merge documents. Use when the user works with PDFs.",
+      "path": "/home/you/.claude/skills/pdf-tools",
+      "realPath": "/home/you/.claude/skills/pdf-tools",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "claude",
+          "relation": "native",
+          "root": "/home/you/.claude/skills",
+          "reason": "Claude Code reads Personal skills (~/.claude/skills) (/home/you/.claude/skills)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "compatible",
+          "root": "/home/you/.claude/skills",
+          "reason": "Cursor also reads Claude Code skills (~/.claude/skills) as a compatibility location (/home/you/.claude/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "shared-location",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "cc955af2403aaf6b942ba3230e4dc4752f8950868dced85782cad1f4e6521353",
+      "modifiedAt": "2026-10-21T08:37:59.182Z"
+    },
+    {
+      "id": "sk_9071d22075293cebb8d8",
+      "name": "react-patterns",
+      "description": "Apply idiomatic React component and hook patterns. Use when writing React UI code.",
+      "path": "/home/you/.cursor/skills/frontend/react-patterns",
+      "realPath": "/home/you/.cursor/skills/frontend/react-patterns",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "cursor",
+          "relation": "native",
+          "root": "/home/you/.cursor/skills",
+          "reason": "Cursor reads User skills (~/.cursor/skills) (/home/you/.cursor/skills)."
+        }
+      ],
+      "sharedLocation": false,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "45e092678ad2365bbbc6aa5cf9ce6195c8f922a0b2c25b58a13e84c57ad83032",
+      "modifiedAt": "2026-10-21T08:37:59.186Z"
+    },
+    {
+      "id": "sk_e500ae102ab8722910af",
+      "name": "repo-conventions",
+      "description": "Follow this repository's naming and testing conventions. Use for any change in this repo.",
+      "path": "/home/you/projects/web-app/.agents/skills/repo-conventions",
+      "realPath": "/home/you/projects/web-app/.agents/skills/repo-conventions",
+      "scope": "project",
+      "agents": [
+        {
+          "agent": "codex",
+          "relation": "native",
+          "root": "/home/you/projects/web-app/.agents/skills",
+          "reason": "OpenAI Codex reads Repository skills (.agents/skills) (/home/you/projects/web-app/.agents/skills)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "native",
+          "root": "/home/you/projects/web-app/.agents/skills",
+          "reason": "Cursor reads Shared project skills (.agents/skills) (/home/you/projects/web-app/.agents/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "shared-location",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "97ed714f3c0c4a9221938bbaed9fdad5a972fe108df3aa0a1a4cd2476166799a",
+      "modifiedAt": "2026-10-21T08:37:59.189Z"
+    },
+    {
+      "id": "sk_6efe641ebde5df8aa6ce",
+      "name": "ui-review",
+      "description": "Review UI changes for accessibility and consistency. Use when editing components.",
+      "path": "/home/you/projects/web-app/.cursor/skills/ui-review",
+      "realPath": "/home/you/projects/web-app/.cursor/skills/ui-review",
+      "scope": "project",
+      "agents": [
+        {
+          "agent": "cursor",
+          "relation": "native",
+          "root": "/home/you/projects/web-app/.cursor/skills",
+          "reason": "Cursor reads Project skills (.cursor/skills) (/home/you/projects/web-app/.cursor/skills)."
+        }
+      ],
+      "sharedLocation": false,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "40f6cb20c15c8ec213233fd57e112f275709b50782c69c8a31a49d735e2f4f9f",
+      "modifiedAt": "2026-10-21T08:37:59.192Z"
+    },
+    {
+      "id": "sk_55272830f4721702fa74",
+      "name": "web-research",
+      "description": "Research a topic on the web and summarise sources. Use for open-ended research questions.",
+      "path": "/home/you/.claude/skills/synced/web-research",
+      "realPath": "/home/you/.claude/skills/synced/web-research",
+      "scope": "global",
+      "agents": [
+        {
+          "agent": "claude",
+          "relation": "native",
+          "root": "/home/you/.claude/skills/synced",
+          "reason": "Claude Code reads Synced from claude.ai (~/.claude/skills/synced) (/home/you/.claude/skills/synced)."
+        },
+        {
+          "agent": "cursor",
+          "relation": "compatible",
+          "root": "/home/you/.claude/skills",
+          "reason": "Cursor also reads Claude Code skills (~/.claude/skills) as a compatibility location (/home/you/.claude/skills)."
+        }
+      ],
+      "sharedLocation": true,
+      "validation": "valid",
+      "errors": 0,
+      "warnings": 0,
+      "statuses": [
+        "detected",
+        "valid",
+        "shared-location",
+        "installed-external",
+        "runtime-unverified"
+      ],
+      "package": null,
+      "contentHash": "f3707ad7f823ab5f4de279de50a16a0ed7bb23e0532c6cd0863d34d4b6a4b377",
+      "modifiedAt": "2026-10-21T08:37:59.183Z"
+    }
+  ]
+}
