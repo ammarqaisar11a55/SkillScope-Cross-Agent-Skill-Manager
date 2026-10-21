@@ -2,7 +2,7 @@
   "name": "skillscope-monorepo",
   "private": true,
   "version": "0.1.0",
-  "description": "SkillScope — cross-agent skill manager for Claude Code, OpenAI Codex and Cursor",
+  "description": "SkillScope \u2014 cross-agent skill manager for Claude Code, OpenAI Codex and Cursor",
   "license": "MIT",
   "type": "module",
   "workspaces": [
@@ -24,9 +24,14 @@
     "test:integration": "SKILLSCOPE_LIVE_REGISTRY=1 vitest run --project core packages/core/tests/integration",
     "test:e2e": "npm run test:e2e -w @skillscope/desktop",
     "dev": "npm run dev -w @skillscope/desktop",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "package": "npm run build && npm run package -w @skillscope/desktop",
+    "verify:release": "node scripts/verify-release.mjs apps/desktop/release --smoke",
+    "icon": "python3 -I scripts/generate-icon.py"
   },
   "devDependencies": {
+    "@electron/asar": "^3.4.1",
+    "@electron/fuses": "^1.8.0",
     "@eslint/js": "^10.0.1",
     "@types/node": "^22.15.0",
     "eslint": "^10.13.0",
