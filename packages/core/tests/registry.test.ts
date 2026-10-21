@@ -54,26 +54,93 @@ describe('package names', () => {
 });
 
 describe('NpmRegistryClient', () => {
-  it('searches with skill keywords and maps results', async () => {
+  it('searches one keyword at a time and maps results', async () => {
     const reg = mockRegistry({
       '@acme/agent-skills': {
         versions: { '1.0.0': { tarball: await tarFixture('multi-skill') } },
         keywords: ['agent-skill', 'claude-code-skill', 'cursor-skill'],
+        description: 'Code review and test writing skills',
       },
     });
     const page = await client(reg.fetch).search({ text: 'review', agents: ['claude'] });
-    const url = new URL(reg.requests[0] as string);
-    expect(url.searchParams.get('text')).toBe('review keywords:claude-code-skill');
+    expect(reg.requests.map((r) => new URL(r).searchParams.get('text'))).toEqual([
+      'review keywords:claude-code-skill',
+    ]);
     expect(page.results[0]).toMatchObject({
       name: '@acme/agent-skills',
       agentHints: ['claude', 'cursor'],
       publisher: 'acme',
     });
+  });
 
+  it('treats several agents as "any of" and de-duplicates the merged results', async () => {
+    const tgz = await tarFixture('multi-skill');
+    const reg = mockRegistry({
+      'claude-only': { versions: { '1.0.0': { tarball: tgz } }, keywords: ['claude-code-skill'] },
+      'cursor-only': { versions: { '1.0.0': { tarball: tgz } }, keywords: ['cursor-skill'] },
+      both: {
+        versions: { '1.0.0': { tarball: tgz } },
+        keywords: ['claude-code-skill', 'cursor-skill'],
+      },
+      'codex-only': { versions: { '1.0.0': { tarball: tgz } }, keywords: ['codex-skill'] },
+    });
+    const page = await client(reg.fetch).search({ text: '', agents: ['claude', 'cursor'] });
+    expect(page.results.map((r) => r.name).sort()).toEqual(['both', 'claude-only', 'cursor-only']);
+    expect(reg.requests.map((r) => new URL(r).searchParams.get('text'))).toEqual([
+      'keywords:claude-code-skill',
+      'keywords:cursor-skill',
+    ]);
+  });
+
+  it('searches every skill keyword when no agent is selected', async () => {
+    const reg = mockRegistry({});
     await client(reg.fetch).search({ text: '' });
-    expect(new URL(reg.requests[1] as string).searchParams.get('text')).toBe(
-      'keywords:agent-skill,claude-code-skill,codex-skill,cursor-skill',
-    );
+    expect(reg.requests.map((r) => new URL(r).searchParams.get('text'))).toEqual([
+      'keywords:agent-skill',
+      'keywords:claude-code-skill',
+      'keywords:codex-skill',
+      'keywords:cursor-skill',
+    ]);
+  });
+
+  it("keeps every request within npm's 64-character text limit", async () => {
+    // Regression: "front" plus all four keywords was 69 characters and npm answered HTTP 400.
+    const reg = mockRegistry({
+      'frontend-skill': {
+        versions: { '1.0.0': { tarball: await tarFixture('multi-skill') } },
+        keywords: ['agent-skill', 'cursor-skill'],
+        description: 'Frontend review helpers',
+      },
+    });
+    const page = await client(reg.fetch).search({ text: 'front' });
+    expect(page.results.map((r) => r.name)).toEqual(['frontend-skill']);
+    const long = await client(reg.fetch).search({ text: 'x'.repeat(200) });
+    expect(long.results).toEqual([]);
+    for (const r of reg.requests) {
+      expect((new URL(r).searchParams.get('text') ?? '').length).toBeLessThanOrEqual(64);
+    }
+  });
+
+  it('filters results by the typed text because npm only uses it for ranking', async () => {
+    const tgz = await tarFixture('multi-skill');
+    const reg = mockRegistry({
+      'pdf-tools': { versions: { '1.0.0': { tarball: tgz } }, description: 'Work with PDF files' },
+      'yaml-helper': { versions: { '1.0.0': { tarball: tgz } }, description: 'YAML utilities' },
+    });
+    const page = await client(reg.fetch).search({ text: 'PDF files' });
+    expect(page.results.map((r) => r.name)).toEqual(['pdf-tools']);
+  });
+
+  it("shows the registry's reason when it rejects a request", async () => {
+    const reject = (async () =>
+      new Response(JSON.stringify({ error: 'The text parameter is invalid' }), {
+        status: 400,
+      })) as unknown as typeof fetch;
+    const error = await client(reject)
+      .search({ text: 'x' })
+      .catch((e: Error) => e);
+    expect(error).toMatchObject({ code: 'REGISTRY_ERROR' });
+    expect((error as Error).message).toContain('The text parameter is invalid');
   });
 
   it('derives agent hints from keywords only', () => {
@@ -109,7 +176,10 @@ describe('NpmRegistryClient', () => {
       if (calls < 3) return new Response('boom', { status: 503 });
       return new Response(JSON.stringify({ total: 0, objects: [] }), { status: 200 });
     }) as unknown as typeof fetch;
-    await expect(client(flaky).search({ text: 'x' })).resolves.toEqual({ total: 0, results: [] });
+    await expect(client(flaky).search({ text: 'x', agents: ['claude'] })).resolves.toEqual({
+      total: 0,
+      results: [],
+    });
     expect(calls).toBe(3);
   });
 
@@ -119,7 +189,9 @@ describe('NpmRegistryClient', () => {
       calls += 1;
       return new Response('boom', { status: 500 });
     }) as unknown as typeof fetch;
-    await expect(client(down, { retries: 1 }).search({ text: 'x' })).rejects.toMatchObject({
+    await expect(
+      client(down, { retries: 1 }).search({ text: 'x', agents: ['claude'] }),
+    ).rejects.toMatchObject({
       code: 'REGISTRY_ERROR',
     });
     expect(calls).toBe(2);
