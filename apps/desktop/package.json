@@ -1,0 +1,43 @@
+{
+  "name": "@skillscope/desktop",
+  "productName": "SkillScope",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cross-agent skill manager for Claude Code, OpenAI Codex and Cursor",
+  "license": "MIT",
+  "author": {
+    "name": "Muhammad Ammar Qaisar",
+    "email": "ammarqaisar1130@gmail.com"
+  },
+  "homepage": "https://github.com/ammarqaisar11a55/SkillScope-Cross-Agent-Skill-Manager",
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:e2e": "playwright test",
+    "dist": "electron-vite build && electron-builder --publish never",
+    "dist:linux": "electron-vite build && electron-builder --linux --publish never",
+    "dist:win": "electron-vite build && electron-builder --win --publish never"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@skillscope/core": "0.1.0",
+    "@skillscope/shared": "0.1.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "electron": "^44.9.0",
+    "electron-builder": "^26.0.0",
+    "electron-vite": "^6.0.0",
+    "lucide-react": "^1.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.0"
+  }
+}
