@@ -104,7 +104,7 @@ export function Marketplace() {
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute top-2 left-2.5 size-4 text-muted" />
               <input
-                className={`${inputClass} pl-8`}
+                className={`${inputClass} w-full pl-8`}
                 aria-label="Search npm"
                 placeholder="Keyword or package name"
                 value={text}
@@ -225,7 +225,7 @@ export function Marketplace() {
                       <option key={v.version} value={v.version}>
                         {v.version}
                         {details.distTags.latest === v.version ? ' (latest)' : ''}
-                        {v.deprecated ? ' — deprecated' : ''} · {formatDate(v.publishedAt)}
+                        {v.deprecated ? ', deprecated' : ''}, published {formatDate(v.publishedAt)}
                       </option>
                     ))}
                   </select>
