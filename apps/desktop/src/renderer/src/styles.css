@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Ubuntu', 'Cantarell', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Ubuntu Mono', monospace;
+
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-info: var(--info);
+}
+
+:root {
+  --surface: #f7f8fa;
+  --surface-2: #ffffff;
+  --surface-3: #eef0f4;
+  --border: #dde1e8;
+  --fg: #141821;
+  --muted: #5b6475;
+  --accent: #4f46e5;
+  --accent-fg: #ffffff;
+  --ok: #15803d;
+  --warn: #b45309;
+  --bad: #b91c1c;
+  --info: #0369a1;
+  color-scheme: light;
+}
+
+:root.dark {
+  --surface: #0b0f17;
+  --surface-2: #121826;
+  --surface-3: #1a2233;
+  --border: #263046;
+  --fg: #e6e9ef;
+  --muted: #94a0b8;
+  --accent: #818cf8;
+  --accent-fg: #0b0f17;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --bad: #f87171;
+  --info: #38bdf8;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
