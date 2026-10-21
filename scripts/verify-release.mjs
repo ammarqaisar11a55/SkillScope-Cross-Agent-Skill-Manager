@@ -51,6 +51,27 @@ for (const pattern of expected) {
   else fail(`missing artifact matching ${pattern}`);
 }
 
+// GNOME only finds icons in sizes its hicolor theme indexes (up to 512x512); a lone 1024x1024
+// icon makes the dock show a generic gear.
+const deb = installers.find((n) => n.endsWith('.deb'));
+if (deb) {
+  const listing = spawnSync('dpkg-deb', ['-c', join(releaseDir, deb)], { encoding: 'utf8' });
+  if (listing.status === 0) {
+    for (const size of ['16x16', '32x32', '48x48', '128x128', '256x256', '512x512']) {
+      if (listing.stdout.includes(`/usr/share/icons/hicolor/${size}/apps/skillscope.png`)) {
+        pass(`deb installs ${size} icon`);
+      } else {
+        fail(`deb is missing the ${size} icon`);
+      }
+    }
+    if (listing.stdout.includes('/opt/SkillScope/resources/icon.png'))
+      pass('deb ships the window icon');
+    else fail('deb is missing resources/icon.png (window icon)');
+  } else {
+    console.log('- dpkg-deb not available; skipped .deb icon checks');
+  }
+}
+
 const unpacked = entries.find((n) => n.endsWith('-unpacked'));
 if (!unpacked) fail('no *-unpacked directory');
 const unpackedDir = unpacked ? join(releaseDir, unpacked) : '';
