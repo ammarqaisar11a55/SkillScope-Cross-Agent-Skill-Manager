@@ -15,6 +15,20 @@ describe('live npm registry', () => {
     for (const r of page.results) expect(typeof r.name).toBe('string');
   });
 
+  it('accepts free-text searches without exceeding the 64-character limit', async () => {
+    // Regression for "The registry responded with HTTP 400" when searching "front".
+    const all = await client.search({ text: 'front' });
+    for (const r of all.results) {
+      const haystack = [r.name, r.description ?? '', ...r.keywords].join(' ').toLowerCase();
+      expect(haystack).toContain('front');
+    }
+    const claude = await client.search({ text: 'skill', agents: ['claude', 'cursor'], size: 10 });
+    expect(claude.results.length).toBeGreaterThan(0);
+    for (const r of claude.results) {
+      expect(r.keywords.some((k) => k === 'claude-code-skill' || k === 'cursor-skill')).toBe(true);
+    }
+  });
+
   it('reads metadata for a scoped package', async () => {
     const details = await client.details('@types/node');
     expect(details.name).toBe('@types/node');
