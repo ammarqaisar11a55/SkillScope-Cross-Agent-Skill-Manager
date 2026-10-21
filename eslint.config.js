@@ -50,4 +50,9 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // Command-line scripts report to the terminal.
+    files: ['scripts/**/*.mjs'],
+    rules: { 'no-console': 'off' },
+  },
 );
