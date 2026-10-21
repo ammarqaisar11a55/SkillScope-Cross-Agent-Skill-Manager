@@ -1,0 +1,29 @@
+{
+  "name": "@skillscope/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SkillScope skill-management engine: discovery, validation, inventory, npm packages and installation",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@skillscope/shared": "0.1.0",
+    "semver": "^7.7.0",
+    "sql.js": "^1.13.0",
+    "tar-stream": "^3.1.7",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.7.0",
+    "@types/sql.js": "^1.4.9",
+    "@types/tar-stream": "^3.1.4"
+  }
+}
