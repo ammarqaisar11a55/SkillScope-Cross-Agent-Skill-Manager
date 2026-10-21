@@ -5,3 +5,5 @@
 *.icns binary
 *.tgz binary
 *.wasm binary
+# CSV exports use RFC 4180 CRLF line endings.
+*.csv text eol=crlf
