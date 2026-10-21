@@ -26,7 +26,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={`inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-sm font-medium transition disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex h-8 items-center gap-1.5 rounded-control px-3 text-sm font-medium transition-colors disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
       disabled={disabled || busy}
       {...rest}
     >
@@ -38,7 +38,7 @@ export function Button({
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <section className={`rounded-lg border border-border bg-surface-2 ${className}`}>
+    <section className={`rounded-panel border border-rule bg-surface-2 ${className}`}>
       {children}
     </section>
   );
@@ -54,9 +54,9 @@ export function CardHeader({
   subtitle?: ReactNode;
 }) {
   return (
-    <header className="flex items-start justify-between gap-3 border-b border-border px-4 py-3">
+    <header className="flex items-start justify-between gap-3 border-b border-rule px-4 py-3">
       <div>
-        <h2 className="text-sm font-semibold">{title}</h2>
+        <h2 className="text-base font-semibold">{title}</h2>
         {subtitle && <p className="mt-0.5 text-xs text-muted">{subtitle}</p>}
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
@@ -87,7 +87,7 @@ export function Badge({
   return (
     <span
       title={title}
-      className={`inline-flex items-center gap-1 whitespace-nowrap rounded px-1.5 py-0.5 text-xs font-medium ${TONES[tone]}`}
+      className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-px text-2xs font-medium ${TONES[tone]}`}
     >
       {children}
     </span>
@@ -144,7 +144,7 @@ export function Callout({
   return (
     <div
       role={tone === 'bad' ? 'alert' : 'note'}
-      className={`flex gap-2.5 rounded-md border px-3 py-2.5 text-sm ${cls}`}
+      className={`flex gap-2.5 rounded-control border px-3 py-2.5 text-sm ${cls}`}
     >
       <Icon className={`mt-0.5 size-4 shrink-0 ${iconCls}`} aria-hidden />
       <div className="min-w-0">
@@ -192,11 +192,11 @@ export function Modal({
       ref={ref}
       aria-labelledby={titleId}
       onClose={onClose}
-      className={`m-auto max-h-[85vh] w-full ${wide ? 'max-w-4xl' : 'max-w-xl'} overflow-hidden rounded-lg border border-border bg-surface-2 p-0 text-fg shadow-2xl backdrop:bg-black/50`}
+      className={`m-auto max-h-[85vh] w-full ${wide ? 'max-w-4xl' : 'max-w-xl'} overflow-hidden rounded-panel border border-rule bg-surface-2 p-0 text-fg shadow-2xl backdrop:bg-black/50`}
     >
       {open && (
         <div className="flex max-h-[85vh] flex-col">
-          <header className="flex items-center justify-between border-b border-border px-4 py-3">
+          <header className="flex items-center justify-between border-b border-rule px-4 py-3">
             <h2 id={titleId} className="font-semibold">
               {title}
             </h2>
@@ -239,8 +239,9 @@ export function Field({
   );
 }
 
+/** Base text-input/select styling. Width is set by each use (w-full, w-48, ...). */
 export const inputClass =
-  'h-8 w-full rounded-md border border-border bg-surface px-2.5 text-sm placeholder:text-muted focus:border-accent focus:outline-none';
+  'h-8 rounded-control border border-border bg-surface px-2.5 text-sm placeholder:text-muted focus:border-accent focus:outline-none';
 
 export function Toggle({
   checked,
