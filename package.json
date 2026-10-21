@@ -25,5 +25,16 @@
     "test:e2e": "npm run test:e2e -w @skillscope/desktop",
     "dev": "npm run dev -w @skillscope/desktop",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.15.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.6.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.40.0",
+    "vitest": "^5.0.0"
   }
 }
