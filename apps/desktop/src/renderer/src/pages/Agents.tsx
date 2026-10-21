@@ -5,6 +5,7 @@ import { AGENT_IDS } from '@skillscope/shared';
 import { agentName, SCOPE_LABELS } from '../lib/format';
 import { useApp } from '../state/app-state';
 import { ValidationBadge } from '../components/skill-badges';
+import { LANE } from '../components/Reach';
 import { SkillDetail } from '../components/SkillDetail';
 import { Badge, Callout, Card, CardHeader, EmptyState, Mono, Spinner } from '../components/ui';
 
@@ -23,7 +24,7 @@ export function Agents() {
       <div
         role="tablist"
         aria-label="Agents"
-        className="flex gap-1 rounded-lg border border-border bg-surface-2 p-1"
+        className="flex gap-1 rounded-panel border border-rule bg-surface-2 p-1"
       >
         {AGENT_IDS.map((id) => (
           <button
@@ -32,7 +33,7 @@ export function Agents() {
             type="button"
             aria-selected={agent === id}
             onClick={() => setAgent(id)}
-            className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium ${agent === id ? 'bg-accent text-accent-fg' : 'hover:bg-surface-3'}`}
+            className={`flex-1 rounded-control px-3 py-1.5 text-sm font-medium ${agent === id ? `bg-surface-3 ${LANE[id].text}` : 'text-muted hover:bg-surface-3/60'}`}
           >
             {agentName(id)} <span className="opacity-70">({inventory.stats.perAgent[id]})</span>
           </button>
@@ -51,14 +52,18 @@ export function Agents() {
             />
             <div className="space-y-3 p-4 text-sm">
               {detection.evidence.length > 0 ? (
-                <p className="text-muted">
-                  Evidence:{' '}
-                  {detection.evidence.map((e) => (
-                    <Mono key={e} className="mr-2">
-                      {e}
-                    </Mono>
-                  ))}
-                </p>
+                <div>
+                  <p className="text-muted">
+                    Detected from these folders (existence only; their contents are not read):
+                  </p>
+                  <ul className="mt-1 space-y-0.5">
+                    {detection.evidence.map((e) => (
+                      <li key={e}>
+                        <Mono>{e}</Mono>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : (
                 <p className="text-muted">
                   No configuration directory or skill folder for this agent was found.
