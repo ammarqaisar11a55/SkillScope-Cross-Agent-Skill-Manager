@@ -1,15 +1,44 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/instrument-sans/index.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * SkillScope tokens.
+ * Graph-paper surfaces and green-black ink; one cobalt action colour; three lane colours that
+ * are reserved for meaning "this agent" and never used as decoration.
+ * Fonts are bundled locally: the renderer CSP blocks remote fonts and the app works offline.
+ */
 @theme {
-  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Ubuntu', 'Cantarell', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Ubuntu Mono', monospace;
+  --font-sans: 'Instrument Sans Variable', 'Segoe UI', 'Ubuntu', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Cascadia Mono', 'Consolas', 'Ubuntu Mono', monospace;
+
+  /* Type scale (13px desktop base, ~1.2 ratio). */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.1rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.3rem;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.45rem;
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: 1.6rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.9rem;
+  --text-display: 2.125rem;
+  --text-display--line-height: 2.5rem;
+
+  --radius-control: 6px;
+  --radius-panel: 10px;
 
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-border: var(--border);
+  --color-rule: var(--rule);
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
@@ -18,37 +47,48 @@
   --color-warn: var(--warn);
   --color-bad: var(--bad);
   --color-info: var(--info);
+  --color-lane-claude: var(--lane-claude);
+  --color-lane-codex: var(--lane-codex);
+  --color-lane-cursor: var(--lane-cursor);
 }
 
 :root {
-  --surface: #f7f8fa;
-  --surface-2: #ffffff;
-  --surface-3: #eef0f4;
-  --border: #dde1e8;
-  --fg: #141821;
-  --muted: #5b6475;
-  --accent: #4f46e5;
+  --surface: #f4f6f3;
+  --surface-2: #fbfcfa;
+  --surface-3: #e8ece7;
+  --border: #d3dad3;
+  --rule: #e1e6e0;
+  --fg: #1c2420;
+  --muted: #5a675f;
+  --accent: #2a47b8;
   --accent-fg: #ffffff;
-  --ok: #15803d;
-  --warn: #b45309;
-  --bad: #b91c1c;
-  --info: #0369a1;
+  --ok: #1f7a3d;
+  --warn: #9a5a00;
+  --bad: #b3261e;
+  --info: #2a5f8a;
+  --lane-claude: #7b3f8f;
+  --lane-codex: #2d5bd7;
+  --lane-cursor: #12806a;
   color-scheme: light;
 }
 
 :root.dark {
-  --surface: #0b0f17;
-  --surface-2: #121826;
-  --surface-3: #1a2233;
-  --border: #263046;
-  --fg: #e6e9ef;
-  --muted: #94a0b8;
-  --accent: #818cf8;
-  --accent-fg: #0b0f17;
-  --ok: #4ade80;
-  --warn: #fbbf24;
-  --bad: #f87171;
-  --info: #38bdf8;
+  --surface: #121815;
+  --surface-2: #19211d;
+  --surface-3: #222c27;
+  --border: #2f3b35;
+  --rule: #26302b;
+  --fg: #e3e9e4;
+  --muted: #94a39a;
+  --accent: #93a8f2;
+  --accent-fg: #0f1430;
+  --ok: #6fcf8e;
+  --warn: #e7b25a;
+  --bad: #f2877e;
+  --info: #84b6dd;
+  --lane-claude: #c896d8;
+  --lane-codex: #8fa9f5;
+  --lane-cursor: #5cc9ac;
   color-scheme: dark;
 }
 
@@ -63,7 +103,11 @@ body {
   background: var(--surface);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-feature-settings:
+    'ss01',
+    'tnum' 0;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -73,5 +117,34 @@ body {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The one orchestrated moment: reach-map dots settle in on first paint. */
+@keyframes reach-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.reach-dot {
+  animation: reach-in 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reach-dot {
+    animation: none;
+  }
+  * {
+    transition-duration: 0ms !important;
+  }
 }
