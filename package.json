@@ -1,7 +1,7 @@
 {
   "name": "skillscope-monorepo",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SkillScope \u2014 cross-agent skill manager for Claude Code, OpenAI Codex and Cursor",
   "license": "MIT",
   "type": "module",
