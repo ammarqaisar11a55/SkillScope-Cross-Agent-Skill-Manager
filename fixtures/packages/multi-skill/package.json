@@ -1,0 +1,15 @@
+{
+  "name": "@acme/agent-skills",
+  "version": "1.0.0",
+  "description": "Code review and test writing skills for coding agents",
+  "keywords": [
+    "agent-skill",
+    "claude-code-skill",
+    "codex-skill",
+    "cursor-skill"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node -e \"require('fs').writeFileSync('POSTINSTALL_RAN', 'yes')\""
+  }
+}
