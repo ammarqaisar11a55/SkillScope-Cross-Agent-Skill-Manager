@@ -22,7 +22,7 @@ export function GitHubButton() {
       rel="noreferrer noopener"
       title="Open the SkillScope repository on GitHub"
       data-testid="github-repo-link"
-      className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-muted hover:bg-surface-3 hover:text-fg"
+      className="flex items-center gap-2 rounded-control px-3 py-1.5 text-sm text-muted hover:bg-surface-3 hover:text-fg"
     >
       <GitHubMark className="size-4" />
       GitHub repository
