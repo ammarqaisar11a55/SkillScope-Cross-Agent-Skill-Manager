@@ -21,6 +21,11 @@ extraMetadata:
 executableName: skillscope
 
 asar: true
+
+# Window icon for Linux X11 sessions and the taskbar (Wayland and GNOME use the .desktop icon).
+extraResources:
+  - from: build/icons/512x512.png
+    to: icon.png
 compression: normal
 
 # Hardening: the packaged app cannot be abused as a generic Node.js runtime.
@@ -41,7 +46,9 @@ linux:
     - target: deb
       arch: [x64]
   category: Development
-  icon: build/icon.png
+  # One PNG per size: GNOME's hicolor theme does not index 1024x1024, so a single large icon
+  # is never found and the dock shows a generic gear.
+  icon: build/icons
   synopsis: Manage agent skills for Claude Code, Codex and Cursor
   description: >-
     SkillScope discovers, validates and installs agent skills for Claude Code, OpenAI Codex and
