@@ -1,0 +1,29 @@
+{
+  "name": "skillscope-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SkillScope — cross-agent skill manager for Claude Code, OpenAI Codex and Cursor",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/shared",
+    "packages/core",
+    "apps/desktop"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "npm run build -w @skillscope/shared -w @skillscope/core && npm run build -w @skillscope/desktop",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "SKILLSCOPE_LIVE_REGISTRY=1 vitest run --project core packages/core/tests/integration",
+    "test:e2e": "npm run test:e2e -w @skillscope/desktop",
+    "dev": "npm run dev -w @skillscope/desktop",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+  }
+}
