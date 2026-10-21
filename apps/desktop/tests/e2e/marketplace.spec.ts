@@ -20,6 +20,7 @@ test.beforeEach(async () => {
       '@acme/agent-skills': {
         versions: { '1.0.0': { tarball: await tarFixture('multi-skill') } },
         keywords: ['agent-skill', 'claude-code-skill', 'codex-skill', 'cursor-skill'],
+        description: 'Code review and test writing skills for coding agents',
       },
     },
     base,
