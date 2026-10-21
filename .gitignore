@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+release/
+*.tsbuildinfo
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+
+# Local application data and databases
+*.db
+*.sqlite
+*.sqlite3
+.skillscope-data/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+.npmrc
+
+# Editors and OS files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
