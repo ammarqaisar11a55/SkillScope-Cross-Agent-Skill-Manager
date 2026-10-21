@@ -1,13 +1,15 @@
-import type { AgentDetection, AgentId, RootRelation, RootStatus, SkillScopeKind } from './agents.js';
+import type {
+  AgentDetection,
+  AgentId,
+  RootRelation,
+  RootStatus,
+  SkillScopeKind,
+} from './agents.js';
 
 export type ValidationSeverity = 'error' | 'warning' | 'info';
 
 export type ValidationCategory =
-  | 'structure'
-  | 'metadata'
-  | 'references'
-  | 'security'
-  | 'compatibility';
+  'structure' | 'metadata' | 'references' | 'security' | 'compatibility';
 
 export interface ValidationIssue {
   code: string;

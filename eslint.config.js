@@ -16,7 +16,10 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
@@ -34,8 +37,14 @@ export default tseslint.config(
         'error',
         {
           patterns: [
-            { group: ['node:*', 'fs', 'path', 'os', 'child_process', 'electron'], message: 'Renderer code must use window.skillscope instead of Node/Electron APIs.' },
-            { group: ['@skillscope/core', '@skillscope/core/*'], message: 'Renderer code must not import the core engine; use IPC.' },
+            {
+              group: ['node:*', 'fs', 'path', 'os', 'child_process', 'electron'],
+              message: 'Renderer code must use window.skillscope instead of Node/Electron APIs.',
+            },
+            {
+              group: ['@skillscope/core', '@skillscope/core/*'],
+              message: 'Renderer code must not import the core engine; use IPC.',
+            },
           ],
         },
       ],

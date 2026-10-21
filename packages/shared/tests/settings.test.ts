@@ -21,10 +21,23 @@ describe('settings', () => {
 
   it('rejects insecure or credentialed registry URLs', () => {
     const base = structuredClone(DEFAULT_SETTINGS);
-    expect(settingsSchema.safeParse({ ...base, registry: { ...base.registry, url: 'http://evil.example.com' } }).success).toBe(false);
     expect(
-      settingsSchema.safeParse({ ...base, registry: { ...base.registry, url: 'https://u:p@registry.example.com' } }).success,
+      settingsSchema.safeParse({
+        ...base,
+        registry: { ...base.registry, url: 'http://evil.example.com' },
+      }).success,
     ).toBe(false);
-    expect(settingsSchema.safeParse({ ...base, registry: { ...base.registry, url: 'http://localhost:4873' } }).success).toBe(true);
+    expect(
+      settingsSchema.safeParse({
+        ...base,
+        registry: { ...base.registry, url: 'https://u:p@registry.example.com' },
+      }).success,
+    ).toBe(false);
+    expect(
+      settingsSchema.safeParse({
+        ...base,
+        registry: { ...base.registry, url: 'http://localhost:4873' },
+      }).success,
+    ).toBe(true);
   });
 });

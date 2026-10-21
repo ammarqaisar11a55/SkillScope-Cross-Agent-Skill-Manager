@@ -12,7 +12,12 @@ describe('errors', () => {
 
   it('serialises SkillScopeError with hint and details', () => {
     const e = new SkillScopeError('TARGET_CONFLICT', 'exists', { hint: 'review', details: ['a'] });
-    expect(toSerializedError(e)).toEqual({ code: 'TARGET_CONFLICT', message: 'exists', hint: 'review', details: ['a'] });
+    expect(toSerializedError(e)).toEqual({
+      code: 'TARGET_CONFLICT',
+      message: 'exists',
+      hint: 'review',
+      details: ['a'],
+    });
   });
 
   it.each([

@@ -22,9 +22,15 @@ export const settingsSchema = z.object({
     url: z
       .string()
       .url()
-      .refine((u) => u.startsWith('https://') || u.startsWith('http://localhost') || u.startsWith('http://127.0.0.1'), {
-        message: 'registry URL must use https (http is only allowed for localhost)',
-      })
+      .refine(
+        (u) =>
+          u.startsWith('https://') ||
+          u.startsWith('http://localhost') ||
+          u.startsWith('http://127.0.0.1'),
+        {
+          message: 'registry URL must use https (http is only allowed for localhost)',
+        },
+      )
       .refine((u) => !/\/\/[^/]*@/.test(u), { message: 'registry URL must not embed credentials' }),
     timeoutMs: z.number().int().min(1000).max(120000),
     retries: z.number().int().min(0).max(5),

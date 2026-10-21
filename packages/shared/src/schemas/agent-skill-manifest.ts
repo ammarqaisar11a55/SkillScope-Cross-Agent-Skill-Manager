@@ -54,12 +54,20 @@ export const agentSkillManifestSchema = z
     const paths = new Set<string>();
     manifest.skills.forEach((skill, index) => {
       if (names.has(skill.name)) {
-        ctx.addIssue({ code: 'custom', path: ['skills', index, 'name'], message: `duplicate skill name "${skill.name}"` });
+        ctx.addIssue({
+          code: 'custom',
+          path: ['skills', index, 'name'],
+          message: `duplicate skill name "${skill.name}"`,
+        });
       }
       names.add(skill.name);
       const key = skill.path.toLowerCase();
       if (paths.has(key)) {
-        ctx.addIssue({ code: 'custom', path: ['skills', index, 'path'], message: `duplicate skill path "${skill.path}"` });
+        ctx.addIssue({
+          code: 'custom',
+          path: ['skills', index, 'path'],
+          message: `duplicate skill path "${skill.path}"`,
+        });
       }
       paths.add(key);
     });
@@ -69,7 +77,11 @@ export const agentSkillManifestSchema = z
       const prev = sorted[i - 1] as string;
       const cur = sorted[i] as string;
       if (cur.startsWith(`${prev}/`)) {
-        ctx.addIssue({ code: 'custom', path: ['skills'], message: `skill path "${cur}" is nested inside "${prev}"` });
+        ctx.addIssue({
+          code: 'custom',
+          path: ['skills'],
+          message: `skill path "${cur}" is nested inside "${prev}"`,
+        });
       }
     }
   });
@@ -87,14 +99,22 @@ export function parseAgentSkillManifest(raw: string): ManifestParseResult {
   try {
     data = JSON.parse(raw);
   } catch (error) {
-    return { manifest: null, errors: [`agent-skill.json is not valid JSON: ${(error as Error).message}`] };
+    return {
+      manifest: null,
+      errors: [`agent-skill.json is not valid JSON: ${(error as Error).message}`],
+    };
   }
   if (typeof data === 'object' && data !== null && 'schemaVersion' in data) {
     const version = (data as { schemaVersion: unknown }).schemaVersion;
-    if (typeof version === 'number' && !(SUPPORTED_MANIFEST_SCHEMA_VERSIONS as readonly number[]).includes(version)) {
+    if (
+      typeof version === 'number' &&
+      !(SUPPORTED_MANIFEST_SCHEMA_VERSIONS as readonly number[]).includes(version)
+    ) {
       return {
         manifest: null,
-        errors: [`schemaVersion ${version} is not supported (supported: ${SUPPORTED_MANIFEST_SCHEMA_VERSIONS.join(', ')}). Update SkillScope.`],
+        errors: [
+          `schemaVersion ${version} is not supported (supported: ${SUPPORTED_MANIFEST_SCHEMA_VERSIONS.join(', ')}). Update SkillScope.`,
+        ],
       };
     }
   }
@@ -102,7 +122,9 @@ export function parseAgentSkillManifest(raw: string): ManifestParseResult {
   if (!parsed.success) {
     return {
       manifest: null,
-      errors: parsed.error.issues.map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`),
+      errors: parsed.error.issues.map(
+        (issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`,
+      ),
     };
   }
   return { manifest: parsed.data, errors: [] };

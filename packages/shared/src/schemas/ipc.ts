@@ -6,7 +6,11 @@ import { settingsPatchSchema } from './settings.js';
  * Every IPC channel and the schema its payload must satisfy. The main process rejects any
  * payload that fails validation before it reaches the service layer.
  */
-const id = z.string().min(1).max(200).regex(/^[A-Za-z0-9._:-]+$/, 'invalid identifier');
+const id = z
+  .string()
+  .min(1)
+  .max(200)
+  .regex(/^[A-Za-z0-9._:-]+$/, 'invalid identifier');
 
 /** npm package names: optionally scoped, lowercase URL-safe characters, at most 214 chars. */
 const packageName = z
@@ -15,13 +19,20 @@ const packageName = z
   .max(214)
   .regex(/^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/, 'invalid npm package name');
 
-const version = z.string().min(1).max(256).regex(/^[0-9A-Za-z.+-]+$/, 'invalid version');
+const version = z
+  .string()
+  .min(1)
+  .max(256)
+  .regex(/^[0-9A-Za-z.+-]+$/, 'invalid version');
 
 const relativePath = z
   .string()
   .min(1)
   .max(1024)
-  .refine((p) => !p.startsWith('/') && !/^[A-Za-z]:/.test(p) && !p.includes('\\'), 'must be relative')
+  .refine(
+    (p) => !p.startsWith('/') && !/^[A-Za-z]:/.test(p) && !p.includes('\\'),
+    'must be relative',
+  )
   .refine((p) => !p.split('/').includes('..'), 'must not traverse');
 
 export const ipcSchemas = {
@@ -71,7 +82,11 @@ export const ipcSchemas = {
     overwriteModified: z.boolean(),
   }),
   'removal:preview': z.object({ receiptId: id }),
-  'removal:execute': z.object({ receiptId: id, removeModified: z.boolean(), confirmed: z.boolean() }),
+  'removal:execute': z.object({
+    receiptId: id,
+    removeModified: z.boolean(),
+    confirmed: z.boolean(),
+  }),
   'backups:restore': z.object({ receiptId: id, confirmed: z.boolean() }),
   'settings:get': z.undefined(),
   'settings:update': settingsPatchSchema,
@@ -93,15 +108,19 @@ export function isIpcChannel(value: unknown): value is IpcChannel {
 }
 
 export type PayloadCheck<C extends IpcChannel> =
-  | { ok: true; value: IpcPayload<C> }
-  | { ok: false; message: string };
+  { ok: true; value: IpcPayload<C> } | { ok: false; message: string };
 
-export function validateIpcPayload<C extends IpcChannel>(channel: C, payload: unknown): PayloadCheck<C> {
+export function validateIpcPayload<C extends IpcChannel>(
+  channel: C,
+  payload: unknown,
+): PayloadCheck<C> {
   const schema: z.ZodType = ipcSchemas[channel];
   const parsed = schema.safeParse(payload);
   if (parsed.success) return { ok: true, value: parsed.data as IpcPayload<C> };
   return {
     ok: false,
-    message: parsed.error.issues.map((i) => `${i.path.join('.') || 'payload'}: ${i.message}`).join('; '),
+    message: parsed.error.issues
+      .map((i) => `${i.path.join('.') || 'payload'}: ${i.message}`)
+      .join('; '),
   };
 }

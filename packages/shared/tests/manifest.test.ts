@@ -3,7 +3,9 @@ import { parseAgentSkillManifest } from '../src/index.js';
 
 const valid = {
   schemaVersion: 1,
-  skills: [{ name: 'code-review', path: 'skills/code-review', agents: ['claude', 'codex', 'cursor'] }],
+  skills: [
+    { name: 'code-review', path: 'skills/code-review', agents: ['claude', 'codex', 'cursor'] },
+  ],
 };
 
 describe('agent-skill.json manifest', () => {
@@ -15,7 +17,10 @@ describe('agent-skill.json manifest', () => {
 
   it('normalises a leading ./ and trailing slash', () => {
     const r = parseAgentSkillManifest(
-      JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: './skills/a/', agents: ['claude'] }] }),
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'a', path: './skills/a/', agents: ['claude'] }],
+      }),
     );
     expect(r.manifest?.skills[0]?.path).toBe('skills/a');
   });
@@ -38,14 +43,56 @@ describe('agent-skill.json manifest', () => {
     ['unsupported schema version', JSON.stringify({ ...valid, schemaVersion: 2 })],
     ['missing skills', JSON.stringify({ schemaVersion: 1 })],
     ['empty skills', JSON.stringify({ schemaVersion: 1, skills: [] })],
-    ['uppercase name', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'Bad', path: 'a', agents: ['claude'] }] })],
-    ['double hyphen', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a--b', path: 'a', agents: ['claude'] }] })],
-    ['unknown agent', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'a', agents: ['vim'] }] })],
-    ['no agents', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'a', agents: [] }] })],
-    ['absolute path', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: '/etc/a', agents: ['claude'] }] })],
-    ['windows absolute path', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'C:/a', agents: ['claude'] }] })],
-    ['backslashes', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'skills\\a', agents: ['claude'] }] })],
-    ['traversal', JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'skills/../../a', agents: ['claude'] }] })],
+    [
+      'uppercase name',
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'Bad', path: 'a', agents: ['claude'] }],
+      }),
+    ],
+    [
+      'double hyphen',
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'a--b', path: 'a', agents: ['claude'] }],
+      }),
+    ],
+    [
+      'unknown agent',
+      JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'a', agents: ['vim'] }] }),
+    ],
+    [
+      'no agents',
+      JSON.stringify({ schemaVersion: 1, skills: [{ name: 'a', path: 'a', agents: [] }] }),
+    ],
+    [
+      'absolute path',
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'a', path: '/etc/a', agents: ['claude'] }],
+      }),
+    ],
+    [
+      'windows absolute path',
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'a', path: 'C:/a', agents: ['claude'] }],
+      }),
+    ],
+    [
+      'backslashes',
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'a', path: 'skills\\a', agents: ['claude'] }],
+      }),
+    ],
+    [
+      'traversal',
+      JSON.stringify({
+        schemaVersion: 1,
+        skills: [{ name: 'a', path: 'skills/../../a', agents: ['claude'] }],
+      }),
+    ],
     [
       'duplicate names',
       JSON.stringify({

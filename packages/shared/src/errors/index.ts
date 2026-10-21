@@ -132,9 +132,17 @@ export function toSerializedError(error: unknown): SerializedError {
     return serialize(mapped.code, message, mapped.hint);
   }
   if (error instanceof Error && error.name === 'AbortError') {
-    return serialize('REGISTRY_TIMEOUT', 'The request timed out.', 'Check your connection or increase the timeout in Settings.');
+    return serialize(
+      'REGISTRY_TIMEOUT',
+      'The request timed out.',
+      'Check your connection or increase the timeout in Settings.',
+    );
   }
-  return serialize('INTERNAL', message, 'This is unexpected. The operation log contains more detail.');
+  return serialize(
+    'INTERNAL',
+    message,
+    'This is unexpected. The operation log contains more detail.',
+  );
 }
 
 const SECRET_PATTERNS: RegExp[] = [

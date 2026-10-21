@@ -12,7 +12,9 @@ describe('IPC payload validation', () => {
   it('accepts valid payloads', () => {
     expect(validateIpcPayload('inventory:scan', undefined).ok).toBe(true);
     expect(validateIpcPayload('registry:details', { name: '@scope/my-skill' }).ok).toBe(true);
-    expect(validateIpcPayload('packages:inspect', { name: 'skill-pack', version: '1.2.3-beta.1' }).ok).toBe(true);
+    expect(
+      validateIpcPayload('packages:inspect', { name: 'skill-pack', version: '1.2.3-beta.1' }).ok,
+    ).toBe(true);
   });
 
   it('rejects payloads for no-argument channels', () => {
@@ -25,8 +27,21 @@ describe('IPC payload validation', () => {
     ['traversal file path', 'inventory:read-file', { skillId: 'abc', path: '../../secret' }],
     ['absolute file path', 'inventory:read-file', { skillId: 'abc', path: '/etc/passwd' }],
     ['windows file path', 'inventory:read-file', { skillId: 'abc', path: 'C:\\Windows' }],
-    ['unknown agent', 'install:plan', { stagingId: 's', skills: ['a'], targets: [{ agentId: 'vim', scope: 'global' }], allowSharedInstall: false }],
-    ['no targets', 'install:plan', { stagingId: 's', skills: ['a'], targets: [], allowSharedInstall: false }],
+    [
+      'unknown agent',
+      'install:plan',
+      {
+        stagingId: 's',
+        skills: ['a'],
+        targets: [{ agentId: 'vim', scope: 'global' }],
+        allowSharedInstall: false,
+      },
+    ],
+    [
+      'no targets',
+      'install:plan',
+      { stagingId: 's', skills: ['a'], targets: [], allowSharedInstall: false },
+    ],
     ['bad id', 'removal:preview', { receiptId: 'a b/c' }],
     ['bad export format', 'export:inventory', { format: 'xml' }],
     ['settings with bad theme', 'settings:update', { theme: 'neon' }],
