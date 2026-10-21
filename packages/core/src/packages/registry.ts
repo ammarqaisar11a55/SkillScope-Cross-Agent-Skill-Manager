@@ -19,6 +19,9 @@ export const SKILL_KEYWORDS: Readonly<Record<'any' | AgentId, string>> = {
 
 export const MAX_TARBALL_BYTES = 50 * 1024 * 1024;
 
+/** npm rejects search `text` longer than this (ERR_TEXT_LENGTH). */
+export const MAX_SEARCH_TEXT_LENGTH = 64;
+
 export interface RegistryClientOptions {
   url: string;
   timeoutMs: number;
@@ -191,11 +194,20 @@ export class NpmRegistryClient {
     const res = await this.request(url, 'application/json');
     if (res.status === 404)
       throw new SkillScopeError('PACKAGE_NOT_FOUND', 'The package was not found in the registry.');
-    if (!res.ok)
+    if (!res.ok) {
+      let detail = '';
+      try {
+        const body = (await res.json()) as { error?: unknown };
+        if (typeof body.error === 'string') detail = `: ${redactSecrets(body.error).slice(0, 200)}`;
+      } catch {
+        // Not JSON; keep the status code only.
+      }
       throw new SkillScopeError(
         'REGISTRY_ERROR',
-        `The registry responded with HTTP ${res.status}.`,
+        `The registry rejected the request (HTTP ${res.status})${detail}.`,
+        { hint: res.status === 400 ? 'Try a shorter or simpler search.' : 'Try again later.' },
       );
+    }
     try {
       return (await res.json()) as T;
     } catch {
@@ -203,21 +215,65 @@ export class NpmRegistryClient {
     }
   }
 
+  /**
+   * Search for skill packages. npm treats a comma in `keywords:` as AND and caps the whole `text`
+   * parameter at 64 characters, so each keyword is searched separately (OR semantics) with the
+   * user's text trimmed to fit, and the results are merged. npm only uses free text for ranking
+   * within a keyword filter, so results are also filtered locally against the typed terms.
+   */
   async search(query: RegistrySearchQuery): Promise<RegistrySearchPage> {
     const agents = query.agents ?? [];
     const keywords = agents.length
       ? agents.map((a) => SKILL_KEYWORDS[a])
       : Object.values(SKILL_KEYWORDS);
-    const text = `${query.text.trim()} keywords:${keywords.join(',')}`.trim();
+    const userText = query.text.trim().replace(/\s+/g, ' ');
+    const size = query.size ?? 20;
+    const pages = await Promise.all(
+      keywords.map((keyword) => this.searchKeyword(userText, keyword, size, query.from ?? 0)),
+    );
+
+    const byName = new Map<string, { result: RegistrySearchResult; score: number }>();
+    for (const page of pages) {
+      for (const hit of page) {
+        const existing = byName.get(hit.result.name);
+        if (!existing || hit.score > existing.score) byName.set(hit.result.name, hit);
+      }
+    }
+    const terms = userText.toLowerCase().split(' ').filter(Boolean);
+    const matches = (r: RegistrySearchResult) => {
+      const haystack = [r.name, r.description ?? '', ...r.keywords].join(' ').toLowerCase();
+      return terms.every((t) => haystack.includes(t));
+    };
+    const results = [...byName.values()]
+      .filter((h) => matches(h.result))
+      .sort((a, b) => b.score - a.score || a.result.name.localeCompare(b.result.name))
+      .map((h) => h.result)
+      .slice(0, size);
+    return { total: results.length, results };
+  }
+
+  private async searchKeyword(
+    userText: string,
+    keyword: string,
+    size: number,
+    from: number,
+  ): Promise<{ result: RegistrySearchResult; score: number }[]> {
+    const suffix = `keywords:${keyword}`;
+    const budget = MAX_SEARCH_TEXT_LENGTH - suffix.length - 1;
+    const text = userText ? `${userText.slice(0, budget).trim()} ${suffix}` : suffix;
     const url = new URL('-/v1/search', this.base);
     url.searchParams.set('text', text);
-    url.searchParams.set('size', String(query.size ?? 20));
-    url.searchParams.set('from', String(query.from ?? 0));
+    // Ask for more than requested: npm ranks by text but does not filter by it.
+    url.searchParams.set('size', String(Math.min(250, userText ? Math.max(size * 5, 100) : size)));
+    url.searchParams.set('from', String(from));
     const body = await this.json<{
-      total?: number;
-      objects?: { package?: Record<string, unknown> }[];
+      objects?: {
+        package?: Record<string, unknown>;
+        searchScore?: unknown;
+        score?: { final?: unknown };
+      }[];
     }>(url);
-    const results: RegistrySearchResult[] = [];
+    const out: { result: RegistrySearchResult; score: number }[] = [];
     for (const obj of body.objects ?? []) {
       const p = obj.package;
       if (!p || typeof p.name !== 'string' || typeof p.version !== 'string') continue;
@@ -227,25 +283,34 @@ export class NpmRegistryClient {
       const maintainers = Array.isArray(p.maintainers)
         ? (p.maintainers as { username?: string }[])
         : [];
-      results.push({
-        name: p.name,
-        version: p.version,
-        description: typeof p.description === 'string' ? p.description : null,
-        keywords: kw,
-        date: typeof p.date === 'string' ? p.date : null,
-        publisher: publisher?.username ?? null,
-        maintainers: maintainers
-          .map((m) => m.username)
-          .filter((m): m is string => typeof m === 'string'),
-        links: {
-          ...(typeof links.npm === 'string' ? { npm: links.npm } : {}),
-          ...(typeof links.repository === 'string' ? { repository: links.repository } : {}),
-          ...(typeof links.homepage === 'string' ? { homepage: links.homepage } : {}),
+      const score =
+        typeof obj.searchScore === 'number'
+          ? obj.searchScore
+          : typeof obj.score?.final === 'number'
+            ? obj.score.final
+            : 0;
+      out.push({
+        score,
+        result: {
+          name: p.name,
+          version: p.version,
+          description: typeof p.description === 'string' ? p.description : null,
+          keywords: kw,
+          date: typeof p.date === 'string' ? p.date : null,
+          publisher: publisher?.username ?? null,
+          maintainers: maintainers
+            .map((m) => m.username)
+            .filter((m): m is string => typeof m === 'string'),
+          links: {
+            ...(typeof links.npm === 'string' ? { npm: links.npm } : {}),
+            ...(typeof links.repository === 'string' ? { repository: links.repository } : {}),
+            ...(typeof links.homepage === 'string' ? { homepage: links.homepage } : {}),
+          },
+          agentHints: agentHintsFromKeywords(kw),
         },
-        agentHints: agentHintsFromKeywords(kw),
       });
     }
-    return { total: typeof body.total === 'number' ? body.total : results.length, results };
+    return out;
   }
 
   async packument(name: string): Promise<Packument> {
