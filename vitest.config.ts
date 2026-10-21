@@ -16,9 +16,19 @@ export default defineConfig({
           name: 'core',
           root: './packages/core',
           include: ['tests/**/*.test.ts'],
-          exclude: process.env.SKILLSCOPE_LIVE_REGISTRY ? [] : ['tests/integration/**'],
+          exclude: ['tests/integration/**'],
           environment: 'node',
           testTimeout: 20000,
+        },
+      },
+      {
+        // Real npm registry; never part of `npm test`. Run with `npm run test:integration`.
+        test: {
+          name: 'integration',
+          root: './packages/core',
+          include: ['tests/integration/**/*.test.ts'],
+          environment: 'node',
+          testTimeout: 60000,
         },
       },
       {
