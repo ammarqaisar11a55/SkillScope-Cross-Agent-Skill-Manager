@@ -95,14 +95,22 @@ export function mockRegistry(packages: Record<string, MockPackage>, base: string
     requests.push(url.href);
     if (url.pathname === '/-/v1/search') {
       const text = url.searchParams.get('text') ?? '';
+      // Mirror the real registry: 2-64 characters, comma-separated keywords are ANDed, and free
+      // text only affects ranking, never which packages match.
+      if (text.length < 2 || text.length > 64) {
+        return new Response(
+          JSON.stringify({
+            error: "The 'text' parameter must be between 2 and 64 characters",
+            code: 'ERR_TEXT_LENGTH',
+          }),
+          { status: 400 },
+        );
+      }
+      const required = /keywords:(\S+)/.exec(text)?.[1]?.split(',') ?? [];
       const objects = Object.entries(packages)
-        .filter(
-          ([name]) =>
-            text.split(' ')[0] === '' ||
-            text.includes('keywords:') ||
-            name.includes(text.split(' ')[0] ?? ''),
-        )
-        .map(([name, p]) => ({
+        .filter(([, p]) => required.every((k) => (p.keywords ?? ['agent-skill']).includes(k)))
+        .map(([name, p], i) => ({
+          searchScore: 100 - i,
           package: {
             name,
             version: p.latest ?? Object.keys(p.versions).at(-1),
