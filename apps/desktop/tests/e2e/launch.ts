@@ -20,7 +20,8 @@ export async function launchApp(
 ): Promise<LaunchedApp> {
   const home = options.home ?? (await mkdtemp(join(tmpdir(), 'skillscope-e2e-home-')));
   const dataDir = options.dataDir ?? (await mkdtemp(join(tmpdir(), 'skillscope-e2e-data-')));
-  const args = [join(import.meta.dirname, '../../out/main/index.js')];
+  // Launch the app folder (not out/main) so Electron reads package.json for name and version.
+  const args = [join(import.meta.dirname, '../..')];
   // CI containers and some Linux filesystems cannot run Chromium's setuid sandbox helper.
   if (process.platform === 'linux') args.push('--no-sandbox');
   const app = await electron.launch({
@@ -46,4 +47,12 @@ export async function launchApp(
       if (!options.home) await rm(home, { recursive: true, force: true });
     },
   };
+}
+
+/** Click a sidebar navigation item (scoped so page content with similar names never matches). */
+export async function goTo(page: Page, label: string): Promise<void> {
+  await page
+    .getByRole('navigation', { name: 'Main' })
+    .getByRole('button', { name: label, exact: true })
+    .click();
 }
