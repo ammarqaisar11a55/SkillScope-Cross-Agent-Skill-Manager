@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies (lifecycle scripts disabled)
+        run: npm ci --ignore-scripts
+
+      - name: Download Electron binary
+        run: node node_modules/electron/install.js
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Unit and engine tests
+        run: npm test
+
+      - name: Build desktop app
+        run: npm run build
+
+      - name: End-to-end tests (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run --auto-servernum npm run test:e2e
+
+      - name: End-to-end tests (Windows)
+        if: runner.os == 'Windows'
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.os }}
+          path: apps/desktop/playwright-report
+          retention-days: 7
