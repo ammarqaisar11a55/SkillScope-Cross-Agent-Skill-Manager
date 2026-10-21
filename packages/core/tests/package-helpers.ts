@@ -17,7 +17,7 @@ export interface TarEntry {
 export async function buildTarball(entries: TarEntry[]): Promise<Buffer> {
   const p = pack();
   const chunks: Buffer[] = [];
-  p.on('data', (c: Buffer) => chunks.push(c));
+  p.on('data', (c: unknown) => chunks.push(c as Buffer));
   const finished = new Promise<void>((resolve, reject) => {
     p.on('end', () => resolve());
     p.on('error', reject);
@@ -86,7 +86,7 @@ export const REGISTRY = 'https://registry.test.invalid';
  * A deterministic stand-in for the npm registry. Records every request so tests can assert that
  * nothing unexpected (such as a lifecycle script runner) was contacted.
  */
-export function mockRegistry(packages: Record<string, MockPackage>) {
+export function mockRegistry(packages: Record<string, MockPackage>, base: string = REGISTRY) {
   const requests: string[] = [];
   const fetchImpl = (async (input: string | URL | Request) => {
     const url = new URL(
@@ -124,7 +124,7 @@ export function mockRegistry(packages: Record<string, MockPackage>) {
       const name = decodeURIComponent(tar[1] as string);
       const v = packages[name]?.versions[tar[2] as string];
       return v
-        ? new Response(v.tarball, { status: 200 })
+        ? new Response(new Uint8Array(v.tarball), { status: 200 })
         : new Response('not found', { status: 404 });
     }
     const name = decodeURIComponent(url.pathname.slice(1));
@@ -138,7 +138,7 @@ export function mockRegistry(packages: Record<string, MockPackage>) {
           version,
           scripts: v.scripts ?? {},
           dist: {
-            tarball: `${REGISTRY}/-/tarball/${encodeURIComponent(name)}/${version}.tgz`,
+            tarball: `${base}/-/tarball/${encodeURIComponent(name)}/${version}.tgz`,
             ...(v.integrity === null ? {} : { integrity: v.integrity ?? sri(v.tarball) }),
             ...(v.shasum === null || v.shasum === undefined ? {} : { shasum: v.shasum }),
           },
