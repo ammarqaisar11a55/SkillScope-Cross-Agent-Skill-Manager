@@ -1,3 +1,35 @@
+# SkillScope 0.1.1
+
+A bug-fix release.
+
+## Fixed
+
+- **Marketplace search failed with "The registry responded with HTTP 400".** npm limits search
+  queries to 64 characters, and SkillScope added all four skill keywords to every search, so
+  almost any typed text went over the limit. Each keyword is now searched separately within the
+  limit.
+- **Searching with no agent selected found nothing.** npm treats several keywords as "all of
+  these", so a package needed every skill keyword to appear. Keywords are now combined as "any of
+  these", and ticking several agents shows packages for any of them.
+- **Typed words did not narrow the results.** npm uses the search text only for ranking.
+  SkillScope now also filters results by the words you type.
+- **Registry errors now say why** a request was rejected instead of showing only the HTTP status.
+- **Ubuntu dock showed a generic gear instead of the SkillScope icon.** The `.deb` installed only
+  a 1024×1024 icon, a size GNOME's icon theme does not look up. It now installs sizes from 16×16
+  to 512×512, each drawn for its size, and the window sets its icon directly.
+
+## Upgrading
+
+Install the new package over the old one. On Ubuntu:
+
+```bash
+sudo apt install ./SkillScope-0.1.1-linux-amd64.deb
+```
+
+If the dock still shows the old icon, log out and back in so GNOME reloads its icon cache.
+
+---
+
 # SkillScope 0.1.0
 
 The first release of SkillScope, a desktop app that shows which agent skills are on your computer
