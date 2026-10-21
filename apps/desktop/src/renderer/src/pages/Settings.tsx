@@ -112,7 +112,7 @@ export function Settings() {
           >
             <div className="flex gap-2">
               <input
-                className={inputClass}
+                className={`${inputClass} w-full`}
                 readOnly
                 value={draft.workspaceRoot ?? ''}
                 placeholder="No workspace selected"
@@ -222,7 +222,7 @@ export function Settings() {
               hint={`Default: ${DEFAULT_REGISTRY_URL}. Credentials are never stored or sent.`}
             >
               <input
-                className={inputClass}
+                className={`${inputClass} w-full`}
                 value={draft.registry.url}
                 onChange={(e) => patch({ registry: { ...draft.registry, url: e.target.value } })}
               />
@@ -233,7 +233,7 @@ export function Settings() {
               type="number"
               min={1000}
               max={120000}
-              className={inputClass}
+              className={`${inputClass} w-full`}
               value={draft.registry.timeoutMs}
               onChange={(e) =>
                 patch({ registry: { ...draft.registry, timeoutMs: Number(e.target.value) } })
@@ -245,7 +245,7 @@ export function Settings() {
               type="number"
               min={0}
               max={5}
-              className={inputClass}
+              className={`${inputClass} w-full`}
               value={draft.registry.retries}
               onChange={(e) =>
                 patch({ registry: { ...draft.registry, retries: Number(e.target.value) } })
