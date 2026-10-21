@@ -11,7 +11,8 @@ import { AGENT_IDS } from '@skillscope/shared';
 import { call, errorText } from '../lib/api';
 import { agentName } from '../lib/format';
 import { useApp } from '../state/app-state';
-import { AgentChips, ScopeBadge, StatusChips, ValidationBadge } from '../components/skill-badges';
+import { ScopeBadge, StatusChips, ValidationBadge } from '../components/skill-badges';
+import { ReachGlyph, ReachLegend } from '../components/Reach';
 import { SkillDetail } from '../components/SkillDetail';
 import {
   Button,
@@ -82,7 +83,7 @@ function Select<T extends string>({
   return (
     <select
       aria-label={label}
-      className={`${inputClass} w-auto`}
+      className={`${inputClass} w-auto min-w-36`}
       value={value}
       onChange={(e) => onChange(e.target.value as T)}
     >
@@ -123,7 +124,7 @@ export function Inventory() {
         <div className="relative min-w-60 flex-1">
           <Search className="pointer-events-none absolute top-2 left-2.5 size-4 text-muted" />
           <input
-            className={`${inputClass} pl-8`}
+            className={`${inputClass} w-full pl-8`}
             placeholder="Search name or description"
             aria-label="Search skills"
             value={filters.text}
@@ -194,6 +195,7 @@ export function Inventory() {
         <Button onClick={() => void exportAs('markdown')}>Markdown</Button>
       </div>
       <ErrorCallout error={exportError} />
+      <ReachLegend />
 
       <Card className="overflow-hidden">
         {rows.length === 0 ? (
@@ -208,7 +210,7 @@ export function Inventory() {
           </EmptyState>
         ) : (
           <table className="w-full text-sm" data-testid="inventory-table">
-            <thead className="bg-surface-3/60 text-left text-xs text-muted">
+            <thead className="border-b border-rule text-left text-xs text-muted">
               <tr>
                 <th className="px-4 py-2 font-medium">Name</th>
                 <th className="px-2 py-2 font-medium">Agents</th>
@@ -221,7 +223,7 @@ export function Inventory() {
             </thead>
             <tbody>
               {rows.map((s) => (
-                <tr key={s.id} className="border-t border-border align-top hover:bg-surface-3/40">
+                <tr key={s.id} className="border-t border-rule align-top hover:bg-surface-3/40">
                   <td className="max-w-80 px-4 py-2.5">
                     <button
                       type="button"
@@ -239,7 +241,7 @@ export function Inventory() {
                     </div>
                   </td>
                   <td className="px-2 py-2.5">
-                    <AgentChips availability={s.availability} />
+                    <ReachGlyph availability={s.availability} />
                   </td>
                   <td className="px-2 py-2.5">
                     <ScopeBadge scope={s.scope} />
