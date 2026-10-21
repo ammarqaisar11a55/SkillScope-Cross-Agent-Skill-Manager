@@ -240,9 +240,10 @@ export function Installations() {
                       <Mono>{r.destination}</Mono>
                     </dd>
                     <dt className="text-muted">Installed</dt>
+                    <dd>{formatDate(r.installedAt)}</dd>
+                    <dt className="text-muted">Integrity</dt>
                     <dd>
-                      {formatDate(r.installedAt)} · integrity{' '}
-                      <Mono>{r.integrity ? `${r.integrity.slice(0, 24)}…` : 'none'}</Mono>
+                      <Mono>{r.integrity ? `${r.integrity.slice(0, 24)}…` : 'none recorded'}</Mono>
                     </dd>
                     <dt className="text-muted">Content hash</dt>
                     <dd>
