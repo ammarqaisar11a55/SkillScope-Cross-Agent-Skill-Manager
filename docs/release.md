@@ -19,8 +19,8 @@ the selected workspace and its own data folder.
 **AppImage**
 
 ```bash
-chmod +x SkillScope-0.1.0-linux-x86_64.AppImage
-./SkillScope-0.1.0-linux-x86_64.AppImage
+chmod +x SkillScope-0.1.1-linux-x86_64.AppImage
+./SkillScope-0.1.1-linux-x86_64.AppImage
 ```
 
 Some distributions need `libfuse2` to run AppImages (`sudo apt install libfuse2` on Ubuntu 22.04+).
@@ -28,7 +28,7 @@ Some distributions need `libfuse2` to run AppImages (`sudo apt install libfuse2`
 **Debian package**
 
 ```bash
-sudo apt install ./SkillScope-0.1.0-linux-amd64.deb
+sudo apt install ./SkillScope-0.1.1-linux-amd64.deb
 ```
 
 **Windows**
@@ -38,7 +38,7 @@ signed** yet, so Windows SmartScreen may warn you the first time. Check the file
 `SHA256SUMS.txt` before choosing _Run anyway_:
 
 ```powershell
-Get-FileHash .\SkillScope-0.1.0-windows-x64-setup.exe -Algorithm SHA256
+Get-FileHash .\SkillScope-0.1.1-windows-x64-setup.exe -Algorithm SHA256
 ```
 
 ## Upgrade
@@ -88,7 +88,7 @@ only when Wine is available. CI builds each platform on its own runner instead.
 ## Release process
 
 1. Update the version in `apps/desktop/package.json` and `docs/release-notes.md`.
-2. Commit, then tag: `git tag v0.1.0 && git push origin v0.1.0`.
+2. Commit, then tag: `git tag v0.1.1 && git push origin v0.1.1`.
 3. The **Release** workflow builds and verifies on `ubuntu-latest` and `windows-latest`, then
    creates a **draft** GitHub release with the installers and combined checksums.
 4. Review the draft and publish it.
