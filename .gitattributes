@@ -1,0 +1,7 @@
+# Normalise line endings so fixtures hash identically on Linux and Windows.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.icns binary
+*.tgz binary
+*.wasm binary
