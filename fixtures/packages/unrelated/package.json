@@ -1,0 +1,8 @@
+{
+  "name": "left-pad-ish",
+  "version": "1.0.0",
+  "keywords": [
+    "agent-skill"
+  ],
+  "main": "lib/index.js"
+}
