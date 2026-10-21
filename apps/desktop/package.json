@@ -18,9 +18,9 @@
     "preview": "electron-vite preview",
     "typecheck": "tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.web.json --noEmit",
     "test:e2e": "playwright test",
-    "dist": "electron-vite build && electron-builder --publish never",
-    "dist:linux": "electron-vite build && electron-builder --linux --publish never",
-    "dist:win": "electron-vite build && electron-builder --win --publish never"
+    "package": "electron-builder --publish never",
+    "package:linux": "electron-builder --linux --publish never",
+    "package:win": "electron-builder --win --publish never"
   },
   "devDependencies": {
     "@fontsource-variable/instrument-sans": "^5.3.0",
@@ -32,7 +32,7 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^6.0.0",
-    "electron": "^44.9.0",
+    "electron": "44.9.3",
     "electron-builder": "^26.0.0",
     "electron-vite": "^6.0.0",
     "lucide-react": "^1.0.0",
