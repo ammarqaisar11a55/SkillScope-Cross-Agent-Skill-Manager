@@ -1,0 +1,81 @@
+# Packaging for Linux (AppImage, .deb) and Windows (NSIS .exe).
+# All runtime code is bundled by electron-vite into out/, so no node_modules are shipped.
+appId: io.github.ammarqaisar11a55.skillscope
+productName: SkillScope
+copyright: Copyright © 2026 Muhammad Ammar Qaisar
+
+directories:
+  output: release/${version}
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+
+# The workspace package name is scoped (@skillscope/desktop), which is not a valid executable or
+# Debian package name, so the packaged app uses a plain name.
+extraMetadata:
+  name: skillscope
+  desktopName: skillscope.desktop
+executableName: skillscope
+
+asar: true
+compression: normal
+
+# Hardening: the packaged app cannot be abused as a generic Node.js runtime.
+electronFuses:
+  runAsNode: false
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableCookieEncryption: true
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
+
+artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  category: Development
+  icon: build/icon.png
+  synopsis: Manage agent skills for Claude Code, Codex and Cursor
+  description: >-
+    SkillScope discovers, validates and installs agent skills for Claude Code, OpenAI Codex and
+    Cursor, with safe npm package installation and per-agent targets.
+  maintainer: Muhammad Ammar Qaisar <ammarqaisar1130@gmail.com>
+  syncDesktopName: true
+
+deb:
+  # Installs system-wide via the package manager; skill management itself never needs root.
+  packageCategory: devel
+  priority: optional
+
+appImage:
+  artifactName: ${productName}-${version}-linux-${arch}.AppImage
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.ico
+  # Unsigned builds are reported as such in the release notes.
+  signAndEditExecutable: true
+
+nsis:
+  oneClick: false
+  # Per-user install by default: no administrator rights required.
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: SkillScope
+  # Keep the user's settings, history and backups when uninstalling.
+  deleteAppDataOnUninstall: false
+  artifactName: ${productName}-${version}-windows-${arch}-setup.${ext}
+
+publish: null
